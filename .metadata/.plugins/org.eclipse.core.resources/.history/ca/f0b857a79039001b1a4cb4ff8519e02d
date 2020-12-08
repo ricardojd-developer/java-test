@@ -37,7 +37,6 @@ public class programVetor {
 		
 		sc.close();
 		
-		
 
 	}
 
