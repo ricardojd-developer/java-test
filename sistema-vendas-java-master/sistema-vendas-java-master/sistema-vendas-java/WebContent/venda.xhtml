@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+	<!-- 
+		Replace path to template, title, header and body
+		with actual data.
+	 -->
+	<ui:composition template="/templates/template.xhtml">
+			<ui:define name="pageTitle">Vendas</ui:define>
+			<ui:define name="pageHeader">Registro de Vendas</ui:define>
+			<ui:define name="body">
+				<h:form>
+					<h:panelGrid columns="2">
+						<h:outputLabel value="Cliente: " />
+						<h:selectOneMenu value="#{vendaBean.clienteSelecionado}">
+							<f:selectItem itemLabel="Selecione um cliente"/>
+							<f:selectItems value="#{vendaBean.clientesSelect}"/>
+							<f:ajax event="change" render="idClienteSelecionado" />
+						</h:selectOneMenu>
+						
+						<h:outputLabel value="Produto: " />
+						<h:panelGroup>
+							<h:inputText value="#{vendaBean.produtoSelecionado.descricao}" />
+							<h:commandButton action="#{vendaBean.buscarProduto()}" value="Pesquisar" >
+								<f:ajax onevent="click" render="idValorTotal" />
+							</h:commandButton>	
+						</h:panelGroup>
+						
+						<h:outputLabel value="ID Cliente: " />
+						<h:outputText id="idClienteSelecionado" value="#{vendaBean.clienteSelecionado.id}" />
+						
+						<h:dataTable value="#{vendaBean.carrinhoCompras}" rendered="#{not empty vendaBean.carrinhoCompras}" var="produto" border="1">
+							<f:facet name="header">Listagem do Carrinho de Compras</f:facet>
+						
+							<h:column>
+								<f:facet name="header">Descricao</f:facet>
+								#{produto.descricao}
+							</h:column>
+							
+							<h:column>
+								<f:facet name="header">Ações</f:facet>
+								<h:commandLink action="#{vendaBean.excluirProdutoCarrinho}" onclick="if(!confirm('Deseja realmente excluir o produto #{produto.descricao} do carrinho?')) return false;">
+									<h:graphicImage library="imagens" name="remove-icon.png" />
+									<f:setPropertyActionListener value="#{produto}" target="#{vendaBean.produtoSelecionado}"/>
+								</h:commandLink>
+							</h:column>
+							
+						</h:dataTable>
+						
+						<h:panelGroup>
+							<h:outputLabel value="Subtotal: " />
+							<h:outputText id="idValorTotal" value="#{vendaBean.valorTotal}" >
+								<f:convertNumber currencyCode="BRL" type="currency" />
+							</h:outputText>
+						</h:panelGroup>
+						
+						<h:commandButton action="#{vendaBean.finalizarVenda()}" value="Finalizar Venda" />
+						
+					</h:panelGrid>
+				</h:form>
+			</ui:define>
+	</ui:composition>
+
+</html>
